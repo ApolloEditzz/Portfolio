@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Video Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e0d0f;
+    --bg-alt:#17151a;
+    --card:#1c1a1f;
+    --ink:#f3efe7;
+    --ink-dim:#a39c8d;
+    --accent:#ff4e32;
+    --line:#2a272c;
+    --radius:2px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  a{color:inherit; text-decoration:none;}
+
+  .wrap{
+    max-width:1100px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(14,13,15,0.9);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 32px;
+    max-width:1100px;
+    margin:0 auto;
+  }
+  .brand{
+    font-family:'Archivo Black', sans-serif;
+    font-size:18px;
+    letter-spacing:0.5px;
+  }
+  .brand span{color:var(--accent);}
+  nav ul{
+    display:flex;
+    gap:28px;
+    list-style:none;
+  }
+  nav a{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    transition:color 0.2s ease;
+  }
+  nav a:hover{color:var(--ink);}
+  .scrub{
+    height:2px;
+    background:var(--line);
+    position:relative;
+  }
+  .scrub-fill{
+    height:100%;
+    width:0%;
+    background:var(--accent);
+    transition:width 0.1s linear;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:120px 0 90px;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--accent);
+    letter-spacing:2px;
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:24px;
+  }
+  .rec-dot{
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--accent);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1;}
+    50%{opacity:0.3;}
+  }
+  .hero h1{
+    font-family:'Archivo Black', sans-serif;
+    font-size:clamp(48px, 9vw, 108px);
+    line-height:0.95;
+    text-transform:uppercase;
+    letter-spacing:-1px;
+  }
+  .hero .role{
+    font-family:'JetBrains Mono', monospace;
+    font-size:16px;
+    color:var(--ink-dim);
+    margin-top:18px;
+    letter-spacing:0.5px;
+  }
+  .hero .tagline{
+    max-width:520px;
+    margin-top:28px;
+    color:var(--ink-dim);
+    font-size:16px;
+  }
+  .timecode{
+    margin-top:48px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--ink-dim);
+    letter-spacing:1px;
+  }
+  .timecode strong{color:var(--ink);}
+
+  /* ---------- SECTION HEADERS ---------- */
+  .section{
+    padding:80px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    gap:16px;
+    margin-bottom:44px;
+  }
+  .section-head .tc{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--accent);
+  }
+  .section-head h2{
+    font-family:'Archivo Black', sans-serif;
+    font-size:32px;
+    text-transform:uppercase;
+    letter-spacing:-0.5px;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:220px 1fr;
+    gap:56px;
+    align-items:start;
+  }
+  .avatar{
+    width:220px;
+    height:220px;
+    border-radius:var(--radius);
+    object-fit:cover;
+    background:var(--card);
+    border:1px solid var(--line);
+  }
+  .avatar-fallback{
+    width:220px;
+    height:220px;
+    border-radius:var(--radius);
+    background:var(--card);
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Archivo Black', sans-serif;
+    font-size:56px;
+    color:var(--accent);
+  }
+  .about-body p{
+    color:var(--ink-dim);
+    margin-bottom:16px;
+    max-width:640px;
+  }
+  .stats{
+    display:flex;
+    gap:48px;
+    margin:32px 0;
+  }
+  .stat-value{
+    font-family:'Archivo Black', sans-serif;
+    font-size:36px;
+    color:var(--accent);
+  }
+  .stat-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--ink-dim);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-top:4px;
+  }
+  .skills{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:24px;
+  }
+  .skill-tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    padding:7px 12px;
+    border:1px solid var(--line);
+    color:var(--ink-dim);
+    border-radius:var(--radius);
+  }
+
+  /* ---------- WORK ---------- */
+  .subgroup{margin-bottom:56px;}
+  .subgroup:last-child{margin-bottom:0;}
+  .subgroup-title{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:1.5px;
+    color:var(--ink-dim);
+    margin-bottom:20px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .subgroup-title::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+  .video-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));
+    gap:24px;
+  }
+  .video-grid.short-grid{
+    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+  }
+  .video-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .video-embed{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    background:#000;
+  }
+  .video-embed.short{aspect-ratio:9/16;}
+  .video-embed iframe{
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    border:0;
+  }
+  .video-meta{
+    padding:16px 18px;
+  }
+  .video-meta h3{
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  .video-meta .tags{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--ink-dim);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+  .empty-note{
+    color:var(--ink-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact{
+    padding:80px 0 60px;
+  }
+  .contact h2{
+    font-family:'Archivo Black', sans-serif;
+    font-size:clamp(32px, 6vw, 56px);
+    text-transform:uppercase;
+    max-width:700px;
+    margin-bottom:36px;
+  }
+  .contact-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .contact-link{
+    font-family:'JetBrains Mono', monospace;
+    font-size:14px;
+    padding:14px 20px;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    transition:border-color 0.2s ease, color 0.2s ease;
+  }
+  .contact-link:hover{
+    border-color:var(--accent);
+    color:var(--accent);
+  }
+  footer{
+    padding:24px 0 40px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--ink-dim);
+    display:flex;
+    justify-content:space-between;
+  }
+
+  @media (max-width:720px){
+    .nav-inner{padding:16px 20px;}
+    nav ul{gap:16px;}
+    .wrap{padding:0 20px;}
+    .about-grid{grid-template-columns:1fr;}
+    .avatar, .avatar-fallback{width:140px; height:140px; font-size:36px;}
+    .stats{gap:32px;}
+    footer{flex-direction:column; gap:8px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav-inner">
+    <div class="brand" id="brandMark">NAME<span>.</span></div>
+    <nav>
+      <ul>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="scrub"><div class="scrub-fill" id="scrubFill"></div></div>
+</header>
+
+<section class="hero wrap">
+  <div class="hero-eyebrow"><span class="rec-dot"></span> AVAILABLE FOR WORK</div>
+  <h1 id="heroName">YOUR NAME</h1>
+  <div class="role mono" id="heroRole">Video Editor</div>
+  <p class="tagline" id="heroTagline">A short one or two line tagline about what you edit and who you edit for goes here.</p>
+  <div class="timecode mono">SESSION <strong id="tc">00:00:00:00</strong></div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tc mono">01</span>
+      <h2>About</h2>
+    </div>
+    <div class="about-grid">
+      <div id="avatarSlot"></div>
+      <div class="about-body">
+        <div id="bioText"></div>
+        <div class="stats" id="statsRow"></div>
+        <div class="skills" id="skillsRow"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tc mono">02</span>
+      <h2>Work</h2>
+    </div>
+    <div id="workContainer"></div>
+  </div>
+</section>
+
+<section class="contact wrap" id="contact">
+  <h2>Got a project? Let's cut something good.</h2>
+  <div class="contact-links" id="contactLinks"></div>
+</section>
+
+<footer class="wrap">
+  <span id="footName">YOUR NAME © <span id="year"></span></span>
+  <span>EOF</span>
+</footer>
+
+<script>
+/* =========================================================================
+   EDIT EVERYTHING BELOW THIS LINE. Nothing above needs to be touched.
+   ========================================================================= */
+
+// ---- 1. YOUR INFO ----------------------------------------------------
+const SITE = {
+  name: "Your Name",
+  role: "Video Editor",
+  tagline: "Freelance video editor focused on [your niche — gaming, vlogs, brand content, music videos]. Long-form and short-form, raw footage to final export.",
+  bio: [
+    "Write one or two short paragraphs here about what you do, the kind of content you edit, and the software you work in.",
+    "Mention how many clients/channels you've worked with, what makes your editing style distinct, and what kind of creators you like working with."
+  ],
+  // photo: put an image file next to this HTML file and put its filename here, e.g. "photo.jpg"
+  // leave as null to show an initials placeholder instead
+  photo: null,
+  stats: [
+    { value: "0+", label: "Channels worked with" },
+    { value: "Pr", label: "Primary software" }
+  ],
+  skills: ["Adobe Premiere Pro", "Long-form Editing", "Shorts & Reels", "Color Grading", "SFX & Music Sync"],
+  contact: [
+    { label: "Email", href: "mailto:you@example.com" },
+    { label: "Instagram", href: "https://instagram.com/yourhandle" },
+    { label: "Discord", href: "https://discord.com/users/yourid" }
+  ]
+};
+
+// ---- 2. YOUR VIDEOS ----------------------------------------------------
+// Add or remove entries freely. Each video needs:
+//   title    -> shown under the video
+//   category -> small label, e.g. "Gaming", "YouTube", "Short"
+//   format   -> "long" or "short" (controls which group it appears in + aspect ratio)
+//   type     -> "youtube" or "vimeo"
+//   id       -> the video ID from the URL
+//     YouTube: youtube.com/watch?v=THIS_PART        -> id: "THIS_PART"
+//     Vimeo:   vimeo.com/THIS_PART  or player.vimeo.com/video/THIS_PART -> id: "THIS_PART"
+//
+// To remove a video, delete its whole { ... } block (including the comma after it).
+// To add one, copy a block below, paste it, and fill in your own values.
+
+const VIDEOS = [
+  {
+    title: "Long-form Edit #1",
+    category: "YouTube · Gaming",
+    format: "long",
+    type: "youtube",
+    id: "dQw4w9WgXcQ"
+  },
+  {
+    title: "Short-form Edit #1",
+    category: "Short · Gaming",
+    format: "short",
+    type: "youtube",
+    id: "dQw4w9WgXcQ"
+  }
+];
+
+/* =========================================================================
+   Rendering logic — no need to edit anything past this point.
+   ========================================================================= */
+
+document.getElementById('brandMark').innerHTML = SITE.name.split(' ')[0].toUpperCase() + '<span>.</span>';
+document.getElementById('heroName').textContent = SITE.name;
+document.getElementById('heroRole').textContent = SITE.role;
+document.getElementById('heroTagline').textContent = SITE.tagline;
+document.getElementById('footName').innerHTML = SITE.name + ' &copy; <span id="year"></span>';
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// avatar
+const avatarSlot = document.getElementById('avatarSlot');
+if (SITE.photo) {
+  avatarSlot.innerHTML = `<img class="avatar" src="${SITE.photo}" alt="${SITE.name}">`;
+} else {
+  const initials = SITE.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  avatarSlot.innerHTML = `<div class="avatar-fallback">${initials}</div>`;
+}
+
+// bio
+document.getElementById('bioText').innerHTML = SITE.bio.map(p => `<p>${p}</p>`).join('');
+
+// stats
+document.getElementById('statsRow').innerHTML = SITE.stats.map(s => `
+  <div>
+    <div class="stat-value">${s.value}</div>
+    <div class="stat-label">${s.label}</div>
+  </div>
+`).join('');
+
+// skills
+document.getElementById('skillsRow').innerHTML = SITE.skills.map(s => `<span class="skill-tag">${s}</span>`).join('');
+
+// contact
+document.getElementById('contactLinks').innerHTML = SITE.contact.map(c => `<a class="contact-link" href="${c.href}" target="_blank" rel="noopener">${c.label} ↗</a>`).join('');
+
+// work
+function embedSrc(v){
+  if (v.type === 'youtube') return `https://www.youtube-nocookie.com/embed/${v.id}?rel=0&modestbranding=1`;
+  if (v.type === 'vimeo') return `https://player.vimeo.com/video/${v.id}?title=0&byline=0&portrait=0`;
+  return '';
+}
+
+const workContainer = document.getElementById('workContainer');
+const groups = [
+  { key: 'long', label: 'Long-form Videos', gridClass: '' },
+  { key: 'short', label: 'Shorts & Reels', gridClass: 'short-grid' }
+];
+
+let anyRendered = false;
+groups.forEach(g => {
+  const items = VIDEOS.filter(v => v.format === g.key);
+  if (items.length === 0) return;
+  anyRendered = true;
+  const cards = items.map(v => `
+    <div class="video-card">
+      <div class="video-embed ${g.key === 'short' ? 'short' : ''}">
+        <iframe src="${embedSrc(v)}" title="${v.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="video-meta">
+        <h3>${v.title}</h3>
+        <div class="tags">${v.category}</div>
+      </div>
+    </div>
+  `).join('');
+
+  workContainer.insertAdjacentHTML('beforeend', `
+    <div class="subgroup">
+      <div class="subgroup-title">${g.label}</div>
+      <div class="video-grid ${g.gridClass}">${cards}</div>
+    </div>
+  `);
+});
+
+if (!anyRendered) {
+  workContainer.innerHTML = `<p class="empty-note">No videos added yet — add entries to the VIDEOS array in the script to show work here.</p>`;
+}
+
+// scroll progress scrubber
+const scrubFill = document.getElementById('scrubFill');
+function updateScrub(){
+  const h = document.documentElement;
+  const scrolled = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+  scrubFill.style.width = (isNaN(scrolled) ? 0 : scrolled) + '%';
+}
+document.addEventListener('scroll', updateScrub);
+updateScrub();
+
+// ambient ticking timecode in hero
+const tc = document.getElementById('tc');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!prefersReducedMotion) {
+  let frames = 0;
+  setInterval(() => {
+    frames++;
+    const f = frames % 30;
+    const totalSec = Math.floor(frames / 30);
+    const s = totalSec % 60;
+    const m = Math.floor(totalSec / 60) % 60;
+    const hh = Math.floor(totalSec / 3600);
+    const pad = n => String(n).padStart(2, '0');
+    tc.textContent = `${pad(hh)}:${pad(m)}:${pad(s)}:${pad(f)}`;
+  }, 1000/30);
+}
+</script>
+
+</body>
+</html>
